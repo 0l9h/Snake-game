@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Windows.Media.Animation;
+using System.Diagnostics;
 
 namespace Snake
 {
@@ -42,6 +42,7 @@ namespace Snake
 
             timer.Interval = TimeSpan.FromMilliseconds(10);
             timer.Tick += MoveSnake;
+            timer.Tick += CheckIfLostByBorderCollision;
             timer.Start();
             
         }
@@ -83,7 +84,6 @@ namespace Snake
             {
                 case MovingDirection.Up:
                     Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) - _speed);
-                    
                     break;
                 case MovingDirection.Down:
                     Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) + _speed);
@@ -94,8 +94,28 @@ namespace Snake
                 case MovingDirection.Right:
                     Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) + _speed);
                     break;
+            } 
+        }
+
+        private void CheckIfLostByBorderCollision(object sender, EventArgs args)
+        {
+            if (Canvas.GetLeft(SnakeHead) <= 0  || Canvas.GetLeft(SnakeHead) > MyCanvas.ActualWidth - SnakeHead.Width
+             || Canvas.GetTop(SnakeHead) <= 0 || Canvas.GetTop(SnakeHead) > MyCanvas.ActualHeight - SnakeHead.Height)
+            {
+                GameLost();
             }
-            
+        }
+
+        private void GameLost()
+        {
+            timer.Stop();
+            MessageBoxResult result = MessageBox.Show("Would you like to try again", "You lost!", 
+                MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.Yes);
+            if (result == MessageBoxResult.Yes)
+            {
+                Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+                Application.Current.Shutdown();
+            }
         }
     }
 }
