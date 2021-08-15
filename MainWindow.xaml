@@ -1,0 +1,14 @@
+﻿<Window x:Class="Snake.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Snake"
+        mc:Ignorable="d"
+        Title="Snake game" Height="450" Width="800">
+
+    <Canvas x:Name="MyCanvas" Background="GreenYellow" KeyDown="MyCanvas_KeyDown">
+        <Image x:Name="SnakeHead" Height="20" Canvas.Top="100" Canvas.Left="100" Width="20" Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\snake.png"/>
+
+    </Canvas>
+</Window>
