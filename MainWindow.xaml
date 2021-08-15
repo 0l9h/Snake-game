@@ -5,9 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snake"
         mc:Ignorable="d"
-        Title="Snake game"  Height="450" Width="800" ResizeMode="NoResize" Icon="C:\Users\olehb\Desktop\Programming\C#\Snake\images\icon.jpg">
+        Title="Snake game"  Height="490" Width="800" ResizeMode="NoResize" Icon="C:\Users\olehb\Desktop\Programming\C#\Snake\images\icon.jpg">
 
     <Canvas x:Name="MyCanvas" KeyDown="MyCanvas_KeyDown" Background="GreenYellow" Height="450" Width="800">
         <Image x:Name="SnakeHead" Height="40" Canvas.Top="100" Canvas.Left="100" Width="40" Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\snake-head.png"/>
+
+        <StatusBar Name="statusbar" Height="45" Background="DarkGreen" Width="800" Canvas.Bottom="0">
+            <Image Height="20" Margin="6"  Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\apple.png"/>
+            <Label x:Name="Scoresheet" Content="0" Height="38" FontSize="20" Foreground="White"/>
+        </StatusBar>
+
     </Canvas>
 </Window>

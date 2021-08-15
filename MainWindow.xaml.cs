@@ -26,7 +26,7 @@ namespace Snake
         private DispatcherTimer timer = new DispatcherTimer(); // timer object
         private const int _speed = 3;
         private MediaPlayer crunch = new MediaPlayer();
-
+        private int score = 0;
         bool _isAppleLoaded = false;
         private Image apple = new Image();
         enum MovingDirection
@@ -110,7 +110,7 @@ namespace Snake
         private void CheckIfLostByBorderCollision(object sender, EventArgs args)
         {
             if (Canvas.GetLeft(SnakeHead) <= 0  || Canvas.GetLeft(SnakeHead) > MyCanvas.ActualWidth - SnakeHead.Width
-             || Canvas.GetTop(SnakeHead) <= 0 || Canvas.GetTop(SnakeHead) > MyCanvas.ActualHeight - SnakeHead.Height)
+             || Canvas.GetTop(SnakeHead) <= 0 || Canvas.GetTop(SnakeHead) > MyCanvas.ActualHeight - statusbar.Height - SnakeHead.Height)
             {
                 GameLost();
             }
@@ -152,7 +152,7 @@ namespace Snake
             }
             Random r = new Random();
             Canvas.SetLeft(apple, r.Next(0, (int)(MyCanvas.Width - apple.Width*2)));
-            Canvas.SetTop(apple, r.Next(0, (int)(MyCanvas.Height - apple.Height*2)));
+            Canvas.SetTop(apple, r.Next(0, (int)(MyCanvas.Height - statusbar.Height - apple.Height*2)));
             
         }
 
@@ -161,12 +161,13 @@ namespace Snake
             if(Math.Abs(Canvas.GetLeft(SnakeHead) - Canvas.GetLeft(apple)) <= 30 &&
                Math.Abs(Canvas.GetTop(SnakeHead) - Canvas.GetTop(apple)) <= 30)
             {
+                score++;
+                Scoresheet.Content = score.ToString();
                 crunch.Play();
                 crunch.Position = TimeSpan.FromMilliseconds(0);
+                
                 YieldApple();
             }
-            
-            
         }
     }
 }
