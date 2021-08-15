@@ -52,18 +52,26 @@ namespace Snake
             {
                 case Key.Up:
                     direction = MovingDirection.Up;
+                    RotateTransform rotateUp = new RotateTransform(180, SnakeHead.Width/2, SnakeHead.Height/2);
+                    SnakeHead.RenderTransform = rotateUp;
                     break;
 
                 case Key.Down:
                     direction = MovingDirection.Down;
+                    RotateTransform rotateDown = new RotateTransform(0, SnakeHead.Width / 2, SnakeHead.Height / 2);
+                    SnakeHead.RenderTransform = rotateDown;
                     break;
 
                 case Key.Left:
                     direction = MovingDirection.Left;
+                    RotateTransform rotateLeft = new RotateTransform(90, SnakeHead.Width / 2, SnakeHead.Height / 2);
+                    SnakeHead.RenderTransform = rotateLeft;
                     break;
 
                 case Key.Right:
                     direction = MovingDirection.Right;
+                    RotateTransform rotateRight = new RotateTransform(270, SnakeHead.Width / 2, SnakeHead.Height / 2);
+                    SnakeHead.RenderTransform = rotateRight;
                     break;
 
             }   
@@ -75,6 +83,7 @@ namespace Snake
             {
                 case MovingDirection.Up:
                     Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) - _speed);
+                    
                     break;
                 case MovingDirection.Down:
                     Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) + _speed);

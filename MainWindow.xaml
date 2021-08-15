@@ -8,7 +8,7 @@
         Title="Snake game" Height="450" Width="800">
 
     <Canvas x:Name="MyCanvas" Background="GreenYellow" KeyDown="MyCanvas_KeyDown">
-        <Image x:Name="SnakeHead" Height="20" Canvas.Top="100" Canvas.Left="100" Width="20" Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\snake.png"/>
+        <Image x:Name="SnakeHead" Height="40" Canvas.Top="100" Canvas.Left="100" Width="40" Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\snake-head.png"/>
 
     </Canvas>
 </Window>
