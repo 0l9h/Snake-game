@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Media;
 
 namespace Snake
 {
@@ -24,6 +25,10 @@ namespace Snake
     {
         private DispatcherTimer timer = new DispatcherTimer(); // timer object
         private const int _speed = 3;
+        private MediaPlayer crunch = new MediaPlayer();
+
+        bool _isAppleLoaded = false;
+        private Image apple = new Image();
         enum MovingDirection
         {
             Left,
@@ -37,12 +42,17 @@ namespace Snake
 
         public MainWindow()
         {
+            Uri crunchUri = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\sounds\crunch.mp3");
+            crunch.Open(crunchUri);
             InitializeComponent();
+            YieldApple();
+
             KeyDown += MyCanvas_KeyDown;
 
             timer.Interval = TimeSpan.FromMilliseconds(10);
             timer.Tick += MoveSnake;
             timer.Tick += CheckIfLostByBorderCollision;
+            timer.Tick += CheckIfAteApple;
             timer.Start();
             
         }
@@ -116,6 +126,47 @@ namespace Snake
                 Process.Start(Process.GetCurrentProcess().MainModule.FileName);
                 Application.Current.Shutdown();
             }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void YieldApple()
+        {
+            if (!_isAppleLoaded)
+            {
+                apple.Width = 30;
+                apple.Height = 30;
+                BitmapImage myBitmapImage = new BitmapImage();
+                myBitmapImage.BeginInit();
+                myBitmapImage.UriSource = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\images\apple.png");
+
+                myBitmapImage.DecodePixelWidth = 30;
+                myBitmapImage.DecodePixelHeight = 30;
+                myBitmapImage.EndInit();
+
+                apple.Source = myBitmapImage;
+                MyCanvas.Children.Add(apple);
+                _isAppleLoaded = true;
+            }
+            Random r = new Random();
+            Canvas.SetLeft(apple, r.Next(0, (int)(MyCanvas.Width - apple.Width*2)));
+            Canvas.SetTop(apple, r.Next(0, (int)(MyCanvas.Height - apple.Height*2)));
+            
+        }
+
+        private void CheckIfAteApple(object sender, EventArgs args)
+        {
+            if(Math.Abs(Canvas.GetLeft(SnakeHead) - Canvas.GetLeft(apple)) <= 30 &&
+               Math.Abs(Canvas.GetTop(SnakeHead) - Canvas.GetTop(apple)) <= 30)
+            {
+                crunch.Play();
+                crunch.Position = TimeSpan.FromMilliseconds(0);
+                YieldApple();
+            }
+            
+            
         }
     }
 }

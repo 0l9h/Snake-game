@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Snake game"  Height="450" Width="800" ResizeMode="NoResize" Icon="C:\Users\olehb\Desktop\Programming\C#\Snake\images\icon.jpg">
 
-    <Canvas x:Name="MyCanvas" KeyDown="MyCanvas_KeyDown" Background="GreenYellow" >
+    <Canvas x:Name="MyCanvas" KeyDown="MyCanvas_KeyDown" Background="GreenYellow" Height="450" Width="800">
         <Image x:Name="SnakeHead" Height="40" Canvas.Top="100" Canvas.Left="100" Width="40" Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\snake-head.png"/>
     </Canvas>
 </Window>
