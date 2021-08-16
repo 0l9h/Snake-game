@@ -57,7 +57,9 @@ namespace Snake
             timer.Interval = TimeSpan.FromMilliseconds(300);
             timer.Tick += MoveSnake;
             timer.Tick += CheckIfLostByBorderCollision;
+            timer.Tick += CheckIfLostByBodyCollision;
             timer.Tick += CheckIfAteApple;
+            
             timer.Start();
             
         }
@@ -215,31 +217,21 @@ namespace Snake
             MyCanvas.Children.Add(body);
             Canvas.SetLeft(body, Canvas.GetLeft(Snake.Last()));
             Canvas.SetTop(body, Canvas.GetTop(Snake.Last()));
-            /*
-                        switch(direction)
-                        {
-                            case MovingDirection.Up:
-                                Canvas.SetLeft(body, Canvas.GetLeft(Snake.Last()));
-                                Canvas.SetTop(body, Canvas.GetTop(Snake.Last()) + _onePartOfBodyLen);
-                                break;
-
-                            case MovingDirection.Down:
-                                Canvas.SetLeft(body, Canvas.GetLeft(Snake.Last()));
-                                Canvas.SetTop(body, Canvas.GetTop(Snake.Last()) - _onePartOfBodyLen);
-                                break;
-
-                            case MovingDirection.Left:
-                                Canvas.SetLeft(body, Canvas.GetLeft(Snake.Last()) + _onePartOfBodyLen);
-                                Canvas.SetTop(body, Canvas.GetTop(Snake.Last()));
-                                break;
-
-                            case MovingDirection.Right:
-                                Canvas.SetLeft(body, Canvas.GetLeft(Snake.Last()) - _onePartOfBodyLen);
-                                Canvas.SetTop(body, Canvas.GetTop(Snake.Last()));
-                                break;
-                        }*/
 
             Snake.Add(body);
+        }
+
+        private void CheckIfLostByBodyCollision(object sender, EventArgs args)
+        {
+            var headTopPos = Canvas.GetTop(SnakeHead);
+            var headLeftPos = Canvas.GetLeft(SnakeHead);
+            for (int i = 1; i < Snake.Count; i++)
+            {
+                if(Math.Abs(headTopPos-Canvas.GetTop(Snake[i]))<=_onePartOfBodyLen/2 && Math.Abs(headLeftPos - Canvas.GetLeft(Snake[i])) <= _onePartOfBodyLen / 2)
+                {
+                    GameLost();
+                }
+            }
         }
     }
 }
