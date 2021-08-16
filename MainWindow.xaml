@@ -8,7 +8,7 @@
         Title="Snake game"  Height="490" Width="800" ResizeMode="NoResize" Icon="C:\Users\olehb\Desktop\Programming\C#\Snake\images\icon.jpg">
 
     <Canvas x:Name="MyCanvas" KeyDown="MyCanvas_KeyDown" Background="GreenYellow" Height="450" Width="800">
-        <Image x:Name="SnakeHead" Height="40" Canvas.Top="100" Canvas.Left="100" Width="40" Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\snake-head.png"/>
+        <Rectangle x:Name="SnakeHead" Height="30" Canvas.Top="90" Canvas.Left="90" Width="30" Fill="Black" Stroke="White"/>
 
         <StatusBar Name="statusbar" Height="45" Background="DarkGreen" Width="800" Canvas.Bottom="0">
             <Image Height="20" Margin="6"  Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\apple.png"/>
