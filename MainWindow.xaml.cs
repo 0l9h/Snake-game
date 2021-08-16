@@ -40,6 +40,7 @@ namespace Snake
         }
 
         private MovingDirection direction = MovingDirection.None;
+        private MovingDirection prevDirection = MovingDirection.None;
 
         public MainWindow()
         {
@@ -104,22 +105,62 @@ namespace Snake
             double prevTop = Canvas.GetTop(SnakeHead);
             double prevLeft = Canvas.GetLeft(SnakeHead);
 
+
             switch (direction)
             {
                 case MovingDirection.Up:
-                    Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) - _speed);
+                    if (prevDirection != MovingDirection.Down)      //  To not to die by changing moving direction to opposite
+                    {
+                        Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) - _speed);
+                        prevDirection = direction;
+                    }
+                    else {
+                        Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) + _speed);
+                        direction = prevDirection; 
+                    }
                     break;
+
                 case MovingDirection.Down:
-                    Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) + _speed);
+                    if (prevDirection != MovingDirection.Up)
+                    {
+                        Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) + _speed);
+                        prevDirection = direction;
+                    }
+                    else
+                    {
+                        Canvas.SetTop(SnakeHead, Canvas.GetTop(SnakeHead) - _speed);
+                        direction = prevDirection;
+                    }
                     break;
+
                 case MovingDirection.Left:
-                    Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) - _speed);
+                    if (prevDirection != MovingDirection.Right)
+                    {
+                        Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) - _speed);
+                        prevDirection = direction;
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) + _speed);
+                        direction = prevDirection;
+                    }
                     break;
+
                 case MovingDirection.Right:
-                    Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) + _speed);
+                    if (prevDirection != MovingDirection.Left)
+                    {
+                        Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) + _speed);
+                        prevDirection = direction;
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(SnakeHead, Canvas.GetLeft(SnakeHead) - _speed);
+                        direction = prevDirection;
+                    }
                     break;
             }
-            for(int i = 1; i < Snake.Count; i++)
+
+            for(int i = 1; i < Snake.Count; i++)        //  Move the whole body in "snake" way
             {
                 double tmpTop = Canvas.GetTop(Snake[i]);
                 double tmpLeft = Canvas.GetLeft(Snake[i]);
@@ -130,11 +171,8 @@ namespace Snake
                 prevTop = tmpTop;
                 prevLeft = tmpLeft;
 
-                
-
             }
-            
-            
+
         }
 
         private void CheckIfLostByBorderCollision(object sender, EventArgs args)
@@ -166,14 +204,14 @@ namespace Snake
         {
             if (!_isAppleLoaded)
             {
-                apple.Width = 30;
-                apple.Height = 30;
+                apple.Width = _onePartOfBodyLen;
+                apple.Height = _onePartOfBodyLen;
                 BitmapImage bitmapApple = new BitmapImage();
                 bitmapApple.BeginInit();
                 bitmapApple.UriSource = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\images\apple.png");
 
-                bitmapApple.DecodePixelWidth = 30;
-                bitmapApple.DecodePixelHeight = 30;
+                bitmapApple.DecodePixelWidth = _onePartOfBodyLen;
+                bitmapApple.DecodePixelHeight = _onePartOfBodyLen;
                 bitmapApple.EndInit();
 
                 apple.Source = bitmapApple;
