@@ -207,6 +207,7 @@ namespace Snake
             backgroundMusic.Pause();
             crush.Play();
             timer.Stop();
+            LoadScoreToDatabase();
             MessageBoxResult result = MessageBox.Show("Would you like to try again?", $"Your score is {score}!", 
                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
             if (result == MessageBoxResult.Yes)
@@ -313,6 +314,15 @@ namespace Snake
                 var bestScore = (from record in context.Records orderby record.Score descending select record).FirstOrDefault();
                 TopScore.Content = bestScore.Score.ToString();
             }
+        }
+
+        private void LoadScoreToDatabase()
+        {
+            using(SnakeContext context = new SnakeContext())
+            {
+                context.Add(new Record { Score = score });
+                context.SaveChanges();
+            }    
         }
     }
 }
