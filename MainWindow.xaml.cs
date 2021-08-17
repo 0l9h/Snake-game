@@ -47,6 +47,8 @@ namespace Snake
 
         public MainWindow()
         {
+            InitializeComponent();
+
 
             Uri crunchUri = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\sounds\crunch.mp3");
             crunch.Open(crunchUri);
@@ -57,8 +59,8 @@ namespace Snake
             Uri crushUri = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\sounds\crush.mp3");
             crush.Open(crushUri);
 
+            LoadBestScoreFromDb();
 
-            InitializeComponent();
 
             Snake.Add(SnakeHead);
 
@@ -301,6 +303,15 @@ namespace Snake
                 {
                     GameLost();
                 }
+            }
+        }
+
+        private void LoadBestScoreFromDb()
+        {
+            using (SnakeContext context = new SnakeContext())
+            {
+                var bestScore = (from record in context.Records orderby record.Score descending select record).FirstOrDefault();
+                TopScore.Content = bestScore.Score.ToString();
             }
         }
     }

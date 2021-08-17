@@ -12,7 +12,9 @@
 
         <StatusBar Name="statusbar" Height="60" Background="DarkGreen" Width="797" Canvas.Bottom="0">
             <Image Height="20" Margin="6"  Source="C:\Users\olehb\Desktop\Programming\C#\Snake\images\apple.png"/>
-            <Label x:Name="Scoresheet" Content="0" Height="38" FontSize="20" Foreground="White"/>
+            <Label x:Name="Scoresheet" Content="0" Height="38" FontSize="20" Margin="2" Foreground="White"/>
+            <Image Height="40" Width="40" Margin="5" Source="/trophy.png"/>
+            <Label x:Name="TopScore" Height="38" FontSize="20" Foreground="White"/>
         </StatusBar>
 
     </Canvas>
