@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Diagnostics;
-using System.Media;
+using System.Windows.Media.Animation;
 
 namespace Snake
 {
@@ -24,6 +24,9 @@ namespace Snake
         private DispatcherTimer timer = new DispatcherTimer(); // timer object
         
         private MediaPlayer crunch = new MediaPlayer();
+        private MediaPlayer backgroundMusic = new MediaPlayer();
+        private MediaPlayer crush = new MediaPlayer();
+
         private int score = 0;
         bool _isAppleLoaded = false;
         private Image apple = new Image();
@@ -44,10 +47,20 @@ namespace Snake
 
         public MainWindow()
         {
+            InitializeComponent();
+
 
             Uri crunchUri = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\sounds\crunch.mp3");
             crunch.Open(crunchUri);
-            InitializeComponent();
+            crunch.Volume = 0.2;
+            Uri musicUri = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\sounds\music3.mp3");
+            backgroundMusic.Open(musicUri);
+            backgroundMusic.Play();
+            Uri crushUri = new Uri(@"C:\Users\olehb\Desktop\Programming\C#\Snake\sounds\crush.mp3");
+            crush.Open(crushUri);
+
+            LoadBestScoreFromDb();
+
 
             Snake.Add(SnakeHead);
 
@@ -69,26 +82,30 @@ namespace Snake
         {
             switch(e.Key)
                 {
-                    //  Uncomment rotation code if specificated images instead of rectangles as part of snake's body.
+                //  Uncomment rotation code if specificated images instead of rectangles as part of snake's body.
 
+                    case Key.W:
                     case Key.Up:
                         direction = MovingDirection.Up;
                         /*RotateTransform rotateUp = new RotateTransform(180, SnakeHead.Width/2, SnakeHead.Height/2);
                         part.RenderTransform = rotateUp;*/
                         break;
 
+                    case Key.S:
                     case Key.Down:
                         direction = MovingDirection.Down;
                         /*RotateTransform rotateDown = new RotateTransform(0, SnakeHead.Width / 2, SnakeHead.Height / 2);
                         part.RenderTransform = rotateDown;*/
                         break;
 
+                    case Key.A:
                     case Key.Left:
                         direction = MovingDirection.Left;
                         /*RotateTransform rotateLeft = new RotateTransform(90, SnakeHead.Width / 2, SnakeHead.Height / 2);
                         part.RenderTransform = rotateLeft;*/
                         break;
 
+                    case Key.D:
                     case Key.Right:
                         direction = MovingDirection.Right;
                         /*RotateTransform rotateRight = new RotateTransform(270, SnakeHead.Width / 2, SnakeHead.Height / 2);
@@ -99,6 +116,7 @@ namespace Snake
             
             
         }
+
         private void MoveSnake(object sender, EventArgs args)
         {
             
@@ -186,9 +204,12 @@ namespace Snake
 
         private void GameLost()
         {
+            backgroundMusic.Pause();
+            crush.Play();
             timer.Stop();
-            MessageBoxResult result = MessageBox.Show("Would you like to try again?", "You lost!", 
-                MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.Yes);
+            LoadScoreToDatabase();
+            MessageBoxResult result = MessageBox.Show("Would you like to try again?", $"Your score is {score}!", 
+                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
             if (result == MessageBoxResult.Yes)
             {
                 Process.Start(Process.GetCurrentProcess().MainModule.FileName);
@@ -219,15 +240,27 @@ namespace Snake
                 _isAppleLoaded = true;
             }
             Random r = new Random();
-            Canvas.SetLeft(apple, r.Next(0, (int)Math.Floor(MyCanvas.Width/_onePartOfBodyLen)*_onePartOfBodyLen));
-            Canvas.SetTop(apple, r.Next(0, (int)Math.Floor(MyCanvas.Height-statusbar.Height) / _onePartOfBodyLen) * _onePartOfBodyLen);
-            
+            Canvas.SetLeft(apple, r.Next(1, (int)(MyCanvas.Width/_onePartOfBodyLen))*_onePartOfBodyLen- _onePartOfBodyLen );
+            Canvas.SetTop(apple, r.Next(1, (int)(MyCanvas.Height-statusbar.Height) / _onePartOfBodyLen) * _onePartOfBodyLen - _onePartOfBodyLen);
+            AnimateApple(apple);
+        }
+
+        private void AnimateApple(Image apple)
+        {
+            DoubleAnimation animation = new DoubleAnimation();
+            animation.From = _onePartOfBodyLen - _onePartOfBodyLen / 8;
+            animation.To = _onePartOfBodyLen + _onePartOfBodyLen / 8;
+            animation.Duration = TimeSpan.FromMilliseconds(700);
+            animation.AutoReverse = true;
+            animation.RepeatBehavior = RepeatBehavior.Forever;
+            apple.BeginAnimation(WidthProperty, animation);
+            apple.BeginAnimation(HeightProperty, animation);
         }
 
         private void CheckIfAteApple(object sender, EventArgs args)
         {
-            if(Math.Abs(Canvas.GetLeft(SnakeHead) - Canvas.GetLeft(apple)) < _onePartOfBodyLen &&
-               Math.Abs(Canvas.GetTop(SnakeHead) - Canvas.GetTop(apple)) < _onePartOfBodyLen)
+            if(Math.Abs(Canvas.GetLeft(SnakeHead) - Canvas.GetLeft(apple)) ==0 &&
+               Math.Abs(Canvas.GetTop(SnakeHead) - Canvas.GetTop(apple)) ==0)
             {
                 AppleEaten();
             }
@@ -241,6 +274,8 @@ namespace Snake
             crunch.Position = TimeSpan.FromMilliseconds(0);
             Grow();
             YieldApple();
+            if(timer.Interval.TotalMilliseconds>100)
+                timer.Interval = timer.Interval - timer.Interval * 0.03;
         }
 
         private void Grow()
@@ -270,6 +305,24 @@ namespace Snake
                     GameLost();
                 }
             }
+        }
+
+        private void LoadBestScoreFromDb()
+        {
+            using (SnakeContext context = new SnakeContext())
+            {
+                var bestScore = (from record in context.Records orderby record.Score descending select record).FirstOrDefault();
+                TopScore.Content = bestScore.Score.ToString();
+            }
+        }
+
+        private void LoadScoreToDatabase()
+        {
+            using(SnakeContext context = new SnakeContext())
+            {
+                context.Add(new Record { Score = score });
+                context.SaveChanges();
+            }    
         }
     }
 }
